@@ -1,8 +1,12 @@
 {
     "cSpell.words": [
         "dbconnfig",
+        "fetchall",
+        "fieldname",
         "globalerrorhandler",
         "hashedpassword",
+        "Updateuser",
+        "uploadfiletocloudinary",
         "usercontrollers",
         "Userexists",
         "validemail",

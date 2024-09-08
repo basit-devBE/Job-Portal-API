@@ -2,7 +2,9 @@ import expressAsyncHandler from "express-async-handler";
 import { hashPassword } from "../utils/password.js";
 import User from "../models/Users.js";
 import  bcrypt  from 'bcrypt';
-import generateToken from "../utils/jwToken.js";
+import {generateToken} from "../utils/jwToken.js";
+import ImgUpload from "../middlewares/multer.js";
+import { uploadfiletocloudinary } from "../utils/cloduinary.js";
 
 export const registerUser = expressAsyncHandler(async(req,res,next)=>{
   const {username, email,password,role} = req.body;
@@ -76,7 +78,7 @@ export const LoginUser = expressAsyncHandler(async(req,res,next)=>{
             message:"Invalid password"
         });
     }
-    const token = generateToken({userId: user._id, roles: user.role});
+    const token = generateToken({userId: user._id, role: user.role});
 
     res.cookie('token',token,{
         httpOnly:true,
@@ -93,4 +95,66 @@ export const LoginUser = expressAsyncHandler(async(req,res,next)=>{
    }catch(error){
          next(error)
    }
+})
+
+
+export const Updateuser = expressAsyncHandler(async(req,res,next)=>{
+    const {username,email,password,About} = req.body
+    const user = await User.findById(req.auth.id)
+    if(!user){
+        return res.json({
+            status:400,
+            message:"The User you want to update does not exist"
+        })
+    }
+    if(username){
+        user.username = username
+    }
+    if(email){
+        user.email = email
+    }
+    if(password){
+        user.password = await hashPassword(password)
+    }
+    if(About){
+        user.About = About
+    }
+    if(req.file){
+        if (req.file) { // Check if a file is uploaded
+           
+            try{
+                const result = await uploadfiletocloudinary(req.file.path);
+                user.profilePicture = result.secure_url;
+            }catch(error){
+                return res.status(500).json({
+                    status:500,
+                    message:"Failed to upload profile picture",
+                    error:error.message
+                })
+            }
+        }
+    }    
+    await user.save()
+    user.password = 0;
+    res.json({
+        status:200,
+        message:"User updated successfully",
+        data:user
+    })
+})
+
+export const fetchallUsers = expressAsyncHandler(async(req,res,next)=>{
+    const users = await User.find()
+    if(!users){
+        return res.json({
+            status:400,
+            message:"No users found"
+        })
+    }
+    users.password = 0;
+    res.json({
+        status:200,
+        message:"Users fetched successfully",
+        data:users
+    })
 })
