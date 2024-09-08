@@ -1,4 +1,4 @@
-const errorHandler = (req, res, next) => {
+export const errorHandler = (req, res, next) => {
     const statusCode = res.statusCode ? res.statusCode : 500
 
     return res.status(statusCode).json({
@@ -9,7 +9,7 @@ const errorHandler = (req, res, next) => {
     })
 }
 
-const notFound = (req, res, next) => {
+export const notFound = (req, res, next) => {
     const error = new Error(
             `The url requested cannot be found - ${req.originalUrl}`
     )
@@ -17,5 +17,4 @@ const notFound = (req, res, next) => {
     next(error?.message)
 }
 
-exports = { errorHandler, notFound }
                                        
