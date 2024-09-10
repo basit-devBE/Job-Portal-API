@@ -5,11 +5,13 @@
         "fieldname",
         "globalerrorhandler",
         "hashedpassword",
+        "Templatepath",
         "Updateuser",
         "uploadfiletocloudinary",
         "usercontrollers",
         "Userexists",
         "validemail",
-        "verifiedtoken"
+        "verifiedtoken",
+        "verifyemail"
     ]
 }

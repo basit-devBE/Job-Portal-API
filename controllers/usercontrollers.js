@@ -5,6 +5,12 @@ import  bcrypt  from 'bcrypt';
 import {generateToken} from "../utils/jwToken.js";
 import ImgUpload from "../middlewares/multer.js";
 import { uploadfiletocloudinary } from "../utils/cloduinary.js";
+import  sendMail  from "../config/sendmail.js";
+import createVerifyToken from "../utils/verify.js";
+import Verification from "../models/verification.js";
+import { readFileSync } from 'fs';
+import fs from "fs"
+import { verify } from "crypto";
 
 export const registerUser = expressAsyncHandler(async(req,res,next)=>{
   const {username, email,password,role} = req.body;
@@ -43,12 +49,29 @@ export const registerUser = expressAsyncHandler(async(req,res,next)=>{
             password:hashedpassword,
             role
         })
-        user.password = 0;
-        res.json({
-            status:201,
-            message:"User created successfully",
-            data:user,
+        const token = await createVerifyToken()
+        await Verification.create({
+            Token: token,
+            userId: user._id
         })
+        const verifyLink = `http://localhost:4320/${token}/${user.id}`        
+        const receivinguser = user.email
+        const subject = "Email Verification"
+        const email_template = "verifyemail"
+        const name = user.username
+        const context = {
+            name: user.username,
+            verifyLink: verifyLink}
+        const responsedata = {username : user.username, role:user.role}
+        await sendMail(receivinguser, subject, email_template,context)
+            if(sendMail){
+                user.password = 0;
+                res.json({
+                    status:201,
+                    message:"User created successfully, Check your mail to verify your account",
+                    data: responsedata
+                })  
+            }
     }catch(error){
         next(error)
     }
