@@ -10,7 +10,7 @@ cloudinary.config({
 })
 
 export const uploadfiletocloudinary = (filename) =>{
-    const filepath = path.join('./uploads', filename)
+    const filepath = path.join('../uploads', filename)
     return new Promise ((resolve,reject)=>{
         cloudinary.uploader.upload(filepath,(error,result)=>{
             if(error){
