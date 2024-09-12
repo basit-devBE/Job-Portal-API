@@ -19,10 +19,10 @@ const jobSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    deadline:{
-        type: Date,
-        required: true
-    },
+    // deadline:{
+    //     type: Date,
+    //     required: true
+    // },
     Recruiter:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"

@@ -9,6 +9,8 @@ import allowedOptions from "./middlewares/corsOptions.js";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middlewares/globalerrorhandler.js";
 import userRouter from "./routes/userRoutes.js";
+import JobRouter from "./routes/jobroutes.js";
+import limit from "./middlewares/ratelimit.js";
 
 const app = express();
 
@@ -24,6 +26,7 @@ app.use((req, res, next) => {
     next(); 
 });
 
+app.use(limit)
 app.use(cors({
     origin: allowedOptions
 }));
@@ -35,7 +38,7 @@ dbConnect();
 
 // Routes
 app.use(userRouter);
-
+app.use(JobRouter)
 // Error Handling Middleware
 app.use(errorHandler);
 
