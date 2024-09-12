@@ -54,7 +54,7 @@ export const registerUser = expressAsyncHandler(async(req,res,next)=>{
             Token: token,
             userId: user._id
         })
-        const verifyLink = `http://localhost:4320/${token}/${user.id}`        
+        const verifyLink = `http://localhost:4320/users/verify/${token}/${user.id}`        
         const receivinguser = user.email
         const subject = "Email Verification"
         const email_template = "verifyemail"
@@ -121,6 +121,39 @@ export const LoginUser = expressAsyncHandler(async(req,res,next)=>{
 })
 
 
+export const VerifyAccount = expressAsyncHandler(async(req,res,next)=>{
+    const {token,userId} = req.params
+
+    const user = await User.findById(userId)
+    if(!user){
+        return res.json({
+            status:400,
+            message:"User does not exist"
+        })
+    }
+    if(user.isVerified){
+        return res.json({
+            status:400,
+            message:"User is already Verified"
+        })
+    }
+    const verification = await Verification.findOne({token:token})
+    if(!verification){
+        return res.json({
+            status: 400,
+            message: "Invalid verification Link"
+        })
+    }
+    user.isVerified = true
+    await user.save()
+
+    // await sendMail(user.email,"Welcome To Crimson Job",)
+    res.json({
+        status: 200,
+        msg:"User Verified Successfully"
+    })
+
+})
 export const Updateuser = expressAsyncHandler(async(req,res,next)=>{
     const {username,email,password,About} = req.body
     const user = await User.findById(req.auth.id)
@@ -179,5 +212,21 @@ export const fetchallUsers = expressAsyncHandler(async(req,res,next)=>{
         status:200,
         message:"Users fetched successfully",
         data:users
+    })
+})
+
+export const deleteuser = expressAsyncHandler(async(req,res,next)=>{
+    const {uerId}= req.auth.id
+    const user = await User.findById(uerId)
+    if(!user){
+        return res.json({
+            status:400,
+            message:"User does not exist"
+        })
+    }
+    await user.remove()
+    res.json({
+        status:200,
+        message:"User deleted successfully"
     })
 })
