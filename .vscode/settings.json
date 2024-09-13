@@ -5,6 +5,7 @@
         "fieldname",
         "globalerrorhandler",
         "hashedpassword",
+        "skillset",
         "Templatepath",
         "Updateuser",
         "uploadfiletocloudinary",

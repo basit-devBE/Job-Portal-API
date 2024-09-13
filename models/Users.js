@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "No information provided"
     },
-    current_Jobs: [
+    Applied_Jobs: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Job"

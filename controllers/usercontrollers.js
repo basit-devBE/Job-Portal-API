@@ -230,3 +230,20 @@ export const deleteuser = expressAsyncHandler(async(req,res,next)=>{
         message:"User deleted successfully"
     })
 })
+
+export const fetchUserProfile = expressAsyncHandler(async(req,res,next)=>{
+    const userId = req.params.id
+    const user = await User.findById(userId)
+    if(!user){
+        return res.json({
+            status:400,
+            message:"User does not exist"
+        })
+    }
+    user.password = 0;
+    return res.json({
+        status:200,
+        message:"User fetched successfully",
+        data:user
+    })
+})

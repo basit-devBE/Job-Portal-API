@@ -69,7 +69,7 @@ export const applyJob = expressAsyncHandler(async(req,res,next)=>{
             msg:"User cannot apply for job"
         })
     }
-    const {jobId}= req.params.id
+    const jobId= req.params.id
     const job = await Job.findById(jobId)
     if(!job){
         return res.json({
@@ -84,6 +84,7 @@ export const applyJob = expressAsyncHandler(async(req,res,next)=>{
         })
     }
     job.Applicants.push(UserId)
+    user.Applied_Jobs.push(jobId)
     await job.save()
     res.json({
         status: 200,
