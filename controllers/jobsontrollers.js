@@ -1,6 +1,7 @@
 import expressAsyncHandler from "express-async-handler";
 import User from "../models/Users.js";
 import Job from "../models/Job.js";
+import sendMail from "../config/sendmail.js";
 
 export const createJobs = expressAsyncHandler(async(req,res,next)=>{
     const userId = req.auth.id
@@ -85,7 +86,17 @@ export const applyJob = expressAsyncHandler(async(req,res,next)=>{
     }
     job.Applicants.push(UserId)
     user.Applied_Jobs.push(jobId)
+
+    await user.save()
     await job.save()
+    const context = {
+        applicantName: user.name,
+        applicantEmail: user.email,
+        applicationDate: Date.now
+
+    }
+    const informemail = "informemail"
+    await sendMail(user.email,"Job Application", informemail,context)
     res.json({
         status: 200,
         msg:"Job applied successfully"
