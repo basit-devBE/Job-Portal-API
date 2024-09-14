@@ -215,21 +215,31 @@ export const fetchallUsers = expressAsyncHandler(async(req,res,next)=>{
     })
 })
 
-export const deleteuser = expressAsyncHandler(async(req,res,next)=>{
-    const {uerId}= req.auth.id
-    const user = await User.findById(uerId)
-    if(!user){
-        return res.json({
-            status:400,
-            message:"User does not exist"
-        })
+export const deleteuser = expressAsyncHandler(async (req, res, next) => {
+    const userId = req.auth.id;
+
+    // Ensure user exists
+    const user = await User.findById(userId);
+    if (!user) {
+        return res.status(400).json({
+            message: "User does not exist",
+        });
     }
-    await user.remove()
-    res.json({
-        status:200,
-        message:"User deleted successfully"
-    })
-})
+
+    // Only the authenticated user can delete their own account
+    if (user._id.toString() !== userId) {
+        return res.status(403).json({
+            message: "Unauthorized action",
+        });
+    }
+
+    // Delete user
+    await user.deleteOne();
+
+    return res.status(200).json({
+        message: "User deleted successfully",
+    });
+});
 
 export const fetchUserProfile = expressAsyncHandler(async(req,res,next)=>{
     const userId = req.params.id

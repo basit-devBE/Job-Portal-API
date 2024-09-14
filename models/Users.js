@@ -64,10 +64,10 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.toJSON = function(){
     const user = this.toObject();
-    if(user.role === 'Client'){
+    if(user.role === 'Recruiter'){
         delete user.Skills;
         delete user.Bids;
-    }else if(user.role === 'Freelancer'){
+    }else if(user.role === 'Applicants'){
         delete user.current_Jobs
     }
     return user;
