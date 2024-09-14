@@ -2,6 +2,7 @@
     "cSpell.words": [
         "dbconnfig",
         "fetchall",
+        "fetchavailable",
         "fieldname",
         "globalerrorhandler",
         "hashedpassword",

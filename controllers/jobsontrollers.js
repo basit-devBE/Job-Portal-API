@@ -204,17 +204,20 @@ export const DeleteJob = expressAsyncHandler(async(req,res,next)=>{
 })
 
 //view all posted jobs
-export const fetchJobs = expressAsyncHandler(async(req,res,next)=>{
-    try{const jobs = await Job.find()
-    if(!jobs){
-        return res.json({
-            status:400,
-            message:"No jobs found"
-        })
+export const fetchavailableJobs = expressAsyncHandler(async(req,res,next)=>{
+    try{
+        // if(Job.A)
+        // const jobs = await Job.find({"Job.Availability":true})
+        const jobs = await Job.find({Availability:true})
+        if(!jobs){
+            return res.json({
+                status:400,
+                message:"No jobs found"
+            })
     }
     res.json({
         status:200,
-        message:"Jobs fetched successfully",
+        message:"Available Jobs fetched successfully",
         data:jobs
     })}catch(error){
         next(error)
@@ -305,3 +308,47 @@ export const viewApplicantsforJob = expressAsyncHandler(async(req,res,next)=>{
         data:applicants
     })
 })
+
+export const closeJob = expressAsyncHandler(async(req,res,next)=>{
+    const userId = req.auth.id
+    const user = await User.findById(userId)
+    if(!user){
+        return res.json({
+            status:400,
+            message:"User does not exist"
+        })
+    }
+    if(!user.isVerified){
+        return res.json({
+            status:400,
+            message:"User is not verified"
+        })
+    }
+    if(user.role !== "Recruiter"){
+        return res.json({
+            status:400,
+            message:"User is not a recruiter"
+        })
+    }
+    const jobId = req.params.id
+    const job = await Job.findById(jobId)
+    if(!job){
+        return res.json({
+            status:400,
+            message:"Job does not exist"
+        })
+    }
+    if(job.Recruiter.toString() !== userId){
+        return res.json({
+            status:400,
+            message:"You are not authorized to close this job"
+        })
+    }
+    job.Availability = false
+    await job.save()
+    res.json({
+        status:200,
+        message:"Job closed successfully"
+    })
+})
+
