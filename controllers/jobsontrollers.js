@@ -352,3 +352,60 @@ export const closeJob = expressAsyncHandler(async(req,res,next)=>{
     })
 })
 
+//filter job searches
+export const searchJobs = expressAsyncHandler(async (req, res, next) => {
+    const userId = req.auth.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return res.status(400).json({
+            message: "User does not exist",
+        });
+    }
+
+    if (!user.isVerified) {
+        return res.status(400).json({
+            message: "User is not verified",
+        });
+    }
+
+    if (user.role !== "Applicant") {
+        return res.status(400).json({
+            message: "User is not an applicant",
+        });
+    }
+
+    const query = {};
+    const { name, budget, location } = req.query;
+
+    if (name) {
+        query.name = { $regex: name, $options: "i" };
+    }
+
+    if (budget) {
+        query.budget = { $gte: budget };
+    }
+
+    if (location) {
+        query.location = { $regex: Location, $options: "i" }; // Ensure 'location' matches Job schema field
+    }
+
+    if (Object.keys(query).length === 0) {
+        return res.status(400).json({
+            message: "Please enter a search parameter",
+        });
+    }
+
+    const jobs = await Job.find({ Availability: true, ...query });
+
+    if (jobs.length === 0) {
+        return res.status(400).json({
+            message: "No jobs found",
+        });
+    }
+
+    res.status(200).json({
+        message: "Jobs fetched successfully",
+        data: jobs,
+    });
+});
