@@ -43,5 +43,20 @@ const jobSchema = new mongoose.Schema({
     }
 })
 
+jobSchema.methods.updateAvailability = function () {
+    const now = new Date();
+    const jobCreationDate = new Date(this.createdAt);
+    const oneMonthLater = new Date(jobCreationDate.setMonth(jobCreationDate.getMonth() + 1));
+
+    if (now > oneMonthLater) {
+        this.Availability = false;
+    }
+
+    return this.save();
+};
+
+
+
+
 const Job = mongoose.model("Job", jobSchema)
 export default Job

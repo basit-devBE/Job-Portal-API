@@ -4,7 +4,7 @@ import Job from "../models/Job.js";
 import sendMail from "../config/sendmail.js";
 
 export const createJobs = expressAsyncHandler(async(req,res,next)=>{
-    const userId = req.auth.id
+    const userId = req?.auth?._id
     const user = await User.findById(userId)
     if(!user){
         return res.json({
@@ -50,7 +50,7 @@ export const createJobs = expressAsyncHandler(async(req,res,next)=>{
 })
 
 export const applyJob = expressAsyncHandler(async(req,res,next)=>{
-    const UserId = req.auth.id
+    const UserId = req?.auth?._id
     const user = await User.findById(UserId);
     if(!user){
         return res.json({
@@ -105,7 +105,7 @@ export const applyJob = expressAsyncHandler(async(req,res,next)=>{
 
 
 export const updateJob = expressAsyncHandler(async(req,res,next)=>{
-    const userId = req.auth.id
+    const userId = req?.auth?._id
     const user = await User.findById(userId)
     if(!user){
         return res.json({
@@ -161,7 +161,7 @@ export const updateJob = expressAsyncHandler(async(req,res,next)=>{
 })
 
 export const DeleteJob = expressAsyncHandler(async(req,res,next)=>{
-    const userId = req.auth.id
+    const userId = req?.auth?._id
     const user = await User.findById(userId)
     if(!user){
         return res.json({
@@ -209,6 +209,7 @@ export const fetchavailableJobs = expressAsyncHandler(async(req,res,next)=>{
         // if(Job.A)
         // const jobs = await Job.find({"Job.Availability":true})
         const jobs = await Job.find({Availability:true})
+        
         if(!jobs){
             return res.json({
                 status:400,
@@ -226,7 +227,7 @@ export const fetchavailableJobs = expressAsyncHandler(async(req,res,next)=>{
 
 
 export const recruiterJobs = expressAsyncHandler(async(req,res,next)=>{
-    const userId = req.auth.id
+    const userId = req?.auth?._id
     const user = await User.findById(userId)
     if(!user){
         return res.json({
@@ -261,7 +262,7 @@ export const recruiterJobs = expressAsyncHandler(async(req,res,next)=>{
 })
 
 export const viewApplicantsforJob = expressAsyncHandler(async(req,res,next)=>{
-    const userId = req.auth.id
+    const userId = req?.auth?._id
     const user = await User.findById(userId)
     if(!user){
         return res.json({
@@ -310,7 +311,7 @@ export const viewApplicantsforJob = expressAsyncHandler(async(req,res,next)=>{
 })
 
 export const closeJob = expressAsyncHandler(async(req,res,next)=>{
-    const userId = req.auth.id
+    const userId = req?.auth?._id
     const user = await User.findById(userId)
     if(!user){
         return res.json({
@@ -354,7 +355,7 @@ export const closeJob = expressAsyncHandler(async(req,res,next)=>{
 
 //filter job searches
 export const searchJobs = expressAsyncHandler(async (req, res, next) => {
-    const userId = req.auth.id;
+    const userId = req?.auth?._id;
     const user = await User.findById(userId);
 
     if (!user) {

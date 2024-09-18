@@ -3,7 +3,7 @@ import { hashPassword } from "../utils/password.js";
 import User from "../models/Users.js";
 import  bcrypt  from 'bcrypt';
 import {generateToken} from "../utils/jwToken.js";
-import ImgUpload from "../middlewares/multer.js";
+import {ImgUpload} from "../middlewares/multer.js";
 import { uploadfiletocloudinary } from "../utils/cloduinary.js";
 import  sendMail  from "../config/sendmail.js";
 import createVerifyToken from "../utils/verify.js";
@@ -184,7 +184,7 @@ export const Updateuser = expressAsyncHandler(async(req,res,next)=>{
             }catch(error){
                 return res.status(500).json({
                     status:500,
-                    message:"Failed to upload profile picture",
+                    message:"Failed to upload",
                     error:error.message
                 })
             }
@@ -257,3 +257,37 @@ export const fetchUserProfile = expressAsyncHandler(async(req,res,next)=>{
         data:user
     })
 })
+
+
+export const UploadCv = expressAsyncHandler(async (req, res, next) => {
+    const userId = req.auth._id; // Ensure req.auth contains user ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return res.status(400).json({
+            message: "User does not exist"
+        });
+    }
+
+    if (req.file)
+        { // Check if a file is uploaded
+        try {
+            const result = await uploadfiletocloudinary(req.file.path);
+            user.cv = result.secure_url;
+            await user.save(); // Save the user with the updated CV
+            res.status(200).json({
+                message: "CV updated successfully",
+                user: user
+            });
+        } catch (error) {
+            return res.status(500).json({
+                message: "Failed to upload",
+                error: error.message
+            });
+        }
+    } else {
+        res.status(400).json({
+            message: "No file uploaded"
+        });
+    }
+});

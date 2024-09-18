@@ -1,4 +1,3 @@
-// Correctly order the parameters and fix error handling
 export const errorHandler = (err, req, res, next) => {
     const statusCode = res.statusCode ? res.statusCode : 500;
 
@@ -10,7 +9,6 @@ export const errorHandler = (err, req, res, next) => {
     });
 };
 
-// Pass the Error object to next()
 export const notFound = (req, res, next) => {
     const error = new Error(`The URL requested cannot be found - ${req.originalUrl}`);
     res.status(404);

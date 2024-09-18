@@ -14,6 +14,7 @@ import limit from "./middlewares/ratelimit.js";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 const app = express();
+import './cron-jobs/availability.js'
 
 // Middleware
 app.use(cookieParser());

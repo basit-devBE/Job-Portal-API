@@ -1,7 +1,7 @@
 import express from "express"
-import { deleteuser, fetchallUsers, fetchUserProfile, LoginUser, registerUser, Updateuser, VerifyAccount } from "../controllers/usercontrollers.js"
+import { deleteuser, fetchallUsers, fetchUserProfile, LoginUser, registerUser, Updateuser, UploadCv, VerifyAccount } from "../controllers/usercontrollers.js"
 import { isLoggedIn } from "../middlewares/isLoggedIn.js"
-import ImgUpload from '../middlewares/multer.js';
+import {FileUpload, ImgUpload} from '../middlewares/multer.js';
 
 const userRouter = express.Router()
 
@@ -88,7 +88,7 @@ userRouter.post("/user/login", LoginUser);
  *       401:
  *         description: Unauthorized access.
  */
-userRouter.put("/user/update", ImgUpload.single('profilepicture'), isLoggedIn, Updateuser);
+userRouter.put("/user/update", ImgUpload.single('profilepicture'),isLoggedIn, Updateuser);
 
 /**
  * @swagger
@@ -169,5 +169,8 @@ userRouter.delete("/users/delete", isLoggedIn, deleteuser);
  *         description: User not found.
  */
 userRouter.get("/users/:id", fetchUserProfile);
+
+userRouter.put("/user/update/cv", FileUpload.single('CV'),isLoggedIn, UploadCv);
+
 
 export default userRouter;

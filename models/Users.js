@@ -50,16 +50,10 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Review"
         }],
-    Projects: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Project"
-        }],
-    Bids: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Bid"
-        }],    
+    cv:{
+        type: String,
+        default: ""
+    }
 })
 
 userSchema.methods.toJSON = function(){

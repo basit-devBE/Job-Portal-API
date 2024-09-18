@@ -6,6 +6,19 @@ if(!fs.existsSync("../uploads")){
     fs.mkdirSync("../uploads")
 }
 
+if(!fs.existsSync("../cv")){
+    fs.mkdirSync("../cv")
+}
+
+const fileStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, '../cv')
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, file.fieldname + '-' + uniqueSuffix)
+    }
+})
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, '../uploads')
@@ -16,20 +29,32 @@ const storage = multer.diskStorage({
     }
   })
   
-  const ImgUpload = multer({
+ export  const ImgUpload = multer({
     storage,
-    limits: { fileSize: 1024 * 1024 }, // Limit file size to 1MB
+    limits: { fileSize: 1024 * 1024 }, 
     fileFilter: (req, file, cb) => {
-        // Extract the file extension
         const ext = path.extname(file.originalname).toLowerCase();
         
-        // Check if the file extension is allowed
         if (ext !== ".jpeg" && ext !== ".png" && ext !== ".jpg") {
             return cb(new Error("File format not supported"), false);
         }
         
-        cb(null, true); // If the file format is allowed, continue with the upload
+        cb(null, true); 
     }
 });
 
-export default ImgUpload;
+ export  const FileUpload = multer({
+    storage:fileStorage,
+    limits:{fileSize: 1024 * 1024},
+    fileFilter: (req, file, cb) => {
+        const ext = path.extname(file.originalname).toLowerCase();
+        
+        if (ext !== ".pdf" && ext !== ".docx" && ext !== ".doc") {
+            return cb(new Error("File format not supported"), false);
+        }
+        
+        cb(null,true)
+      }
+  })
+
+ 
