@@ -4,7 +4,7 @@ import User from "../models/Users.js";
 import  bcrypt  from 'bcrypt';
 import {generateToken} from "../utils/jwToken.js";
 import {ImgUpload} from "../middlewares/multer.js";
-import { uploadfiletocloudinary } from "../utils/cloduinary.js";
+import { uploadCVtoCloud, uploadfiletocloudinary } from "../utils/cloduinary.js";
 import  sendMail  from "../config/sendmail.js";
 import createVerifyToken from "../utils/verify.js";
 import Verification from "../models/verification.js";
@@ -216,7 +216,7 @@ export const fetchallUsers = expressAsyncHandler(async(req,res,next)=>{
 })
 
 export const deleteuser = expressAsyncHandler(async (req, res, next) => {
-    const userId = req.auth.id;
+    const userId = req?.auth?._id;
 
     // Ensure user exists
     const user = await User.findById(userId);
@@ -272,7 +272,7 @@ export const UploadCv = expressAsyncHandler(async (req, res, next) => {
     if (req.file)
         { // Check if a file is uploaded
         try {
-            const result = await uploadfiletocloudinary(req.file.path);
+            const result = await uploadCVtoCloud(req.file.path);
             user.cv = result.secure_url;
             await user.save(); // Save the user with the updated CV
             res.status(200).json({

@@ -21,3 +21,16 @@ export const uploadfiletocloudinary = (filename) =>{
         })
     })
 }
+
+export const uploadCVtoCloud = (filename) =>{
+    const filepath = path.join('../cv', filename)
+    return new Promise ((resolve,reject)=>{
+        cloudinary.uploader.upload(filepath, {resource_type: 'raw'},(error,result)=>{
+            if(error){
+                reject(error)
+            }else{
+                resolve(result)
+            }
+        })
+    })
+}

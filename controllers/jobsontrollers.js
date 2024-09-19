@@ -2,6 +2,7 @@ import expressAsyncHandler from "express-async-handler";
 import User from "../models/Users.js";
 import Job from "../models/Job.js";
 import sendMail from "../config/sendmail.js";
+import { FileUpload } from "../middlewares/multer.js";
 
 export const createJobs = expressAsyncHandler(async(req,res,next)=>{
     const userId = req?.auth?._id
@@ -70,6 +71,12 @@ export const applyJob = expressAsyncHandler(async(req,res,next)=>{
             msg:"User cannot apply for job"
         })
     }
+    if(!user.cv){
+        return res.json({
+            status: 400,
+            message:"No cv or resume to send to the Recruiter"
+        })
+    }
     const jobId= req.params.id
     const job = await Job.findById(jobId)
     if(!job){
@@ -86,13 +93,15 @@ export const applyJob = expressAsyncHandler(async(req,res,next)=>{
     }
     job.Applicants.push(UserId)
     user.Applied_Jobs.push(jobId)
-
     await user.save()
     await job.save()
     const context = {
-        applicantName: user.name,
+        clientName: "Recruiter",
+        jobTitle: job.name,
+        applicantName: user.username,
         applicantEmail: user.email,
-        applicationDate: Date.now
+        cv:user.cv,
+        applicationDate: new Date().toLocaleDateString('en-Us', {year: '2-digit', month: '2-digit', day:'2-digit'})
 
     }
     const informemail = "informemail"
