@@ -40,11 +40,6 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Job"
         }],
-    Skills: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Skill"
-        }],
     Reviews: [
         {
             type: mongoose.Schema.Types.ObjectId,

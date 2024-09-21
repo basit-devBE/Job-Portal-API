@@ -142,3 +142,10 @@ dist
 pyvenv.cfg
 .venv
 pip-selfcheck.json
+.idea/Job-Portal-API.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.gitignore
+.gitignore
