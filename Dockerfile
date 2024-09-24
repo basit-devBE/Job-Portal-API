@@ -20,4 +20,4 @@ RUN npm install -g nodemon
 EXPOSE 8080
 
 # Define the command to run your app using nodemon.
-CMD ["node", "server.js"]
+CMD ["npm start"]

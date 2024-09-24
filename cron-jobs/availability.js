@@ -1,5 +1,7 @@
 import cron from "node-cron"
 import Job from "../models/Job.js"
+import {updateAvailabilty} from "../models/Job.js"
+
 
 
 cron.schedule('0 0 * * *', async () => {
@@ -14,3 +16,5 @@ cron.schedule('0 0 * * *', async () => {
         console.log("Error updating job availability")
     }
 })
+
+//TODO:Create a function and delete all jobs that has expired

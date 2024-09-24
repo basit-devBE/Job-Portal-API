@@ -321,6 +321,7 @@ export const viewApplicantsforJob = expressAsyncHandler(async(req,res,next)=>{
 
 export const closeJob = expressAsyncHandler(async(req,res,next)=>{
     const userId = req?.auth?._id
+    //TODO:send applicants who were successful to close job(come as body),pass in the job status as a body
     const user = await User.findById(userId)
     if(!user){
         return res.json({
@@ -355,6 +356,7 @@ export const closeJob = expressAsyncHandler(async(req,res,next)=>{
         })
     }
     job.Availability = false
+    //TODO:don't pass the boolean directly
     await job.save()
     res.json({
         status:200,

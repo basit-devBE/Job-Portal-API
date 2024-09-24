@@ -14,9 +14,8 @@ export const addReview = expressAsyncHandler(async(req,res,next)=>{
         res.status(400)
         throw new Error('User not verified')
     }
-    if(user !== "Recruiter"){
+    if(user !== "Applicant"){
         res.status(400)
         throw new Error('Only recruiters can add reviews')
     }
-
 })
