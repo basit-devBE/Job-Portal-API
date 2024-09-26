@@ -40,11 +40,6 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Job"
         }],
-    Reviews: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Review"
-        }],
     cv:{
         type: String,
         default: ""
