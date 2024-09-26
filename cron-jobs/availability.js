@@ -1,6 +1,6 @@
 import cron from "node-cron"
 import Job from "../models/Job.js"
-import {updateAvailabilty} from "../models/Job.js"
+// import {updateAvailabilty} from "../models/Job.js"
 
 
 

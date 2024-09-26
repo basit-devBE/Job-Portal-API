@@ -39,9 +39,12 @@ const jobSchema = new mongoose.Schema({
     },
     Availability:{
         type: Boolean,
-        default: true
+        default: true,
+    },
+    SuccessfulUsers:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     }
-//TODO:Successful applicants(array..store their ID)
 })
 
 jobSchema.methods.updateAvailability = function () {
@@ -57,7 +60,7 @@ jobSchema.methods.updateAvailability = function () {
 };
 
 
-export {updateAvailability}
+// export {updateAvailability}
 
 const Job = mongoose.model("Job", jobSchema)
 export default Job

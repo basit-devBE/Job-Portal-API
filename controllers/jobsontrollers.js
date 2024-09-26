@@ -321,7 +321,7 @@ export const viewApplicantsforJob = expressAsyncHandler(async(req,res,next)=>{
 
 export const closeJob = expressAsyncHandler(async(req,res,next)=>{
     const userId = req?.auth?._id
-    //TODO:send applicants who were successful to close job(come as body),pass in the job status as a body
+    console.log(userId)
     const user = await User.findById(userId)
     if(!user){
         return res.json({
@@ -355,14 +355,39 @@ export const closeJob = expressAsyncHandler(async(req,res,next)=>{
             message:"You are not authorized to close this job"
         })
     }
-    job.Availability = false
-    //TODO:don't pass the boolean directly
-    await job.save()
-    res.json({
-        status:200,
-        message:"Job closed successfully"
-    })
-})
+    const acceptedUsers = req.body
+   if(!acceptedUsers || acceptedUsers.length === 0){
+        return res.json({
+            status:400,
+            message:"Please provide the successful applicants"
+        })
+   }
+   const acceptedUsersIds = await User.find({email :{$in: acceptedUsers}}).select('_id');
+    if(acceptedUsersIds.length === 0){
+        return res.json({
+            status:400,
+            message:"No successful applicants found"
+        })
+    }
+    const acceptedUserIdsArray = acceptedUserIds.map(user => user._id);
+    const notApplicants = acceptedUserIdsArray.filter(id => !job.Applicants.includes(id));
+    if (notApplicants.length > 0) {
+        return res.json({
+            status: 400,
+            message: `The following accepted users are not applicants for this job: ${notApplicants.join(', ')}`
+        });
+    }
+
+    // Add accepted users to successfulApplicants
+    job.successfulApplicants.push(...acceptedUserIdsArray); // Use spread operator to add all IDs
+    job.Availability = false; // Set job availability to false
+    await job.save();
+
+    return res.json({
+        status: 200,
+        message: "Job closed successfully"
+    });
+});
 
 //filter job searches
 export const searchJobs = expressAsyncHandler(async (req, res, next) => {
