@@ -79,6 +79,7 @@ export const registerUser = expressAsyncHandler(async(req,res,next)=>{
 })
 
 export const LoginUser = expressAsyncHandler(async(req,res,next)=>{
+    console.log(req)
    try{
     const {email,password} = req.body
     if(!email || !password){

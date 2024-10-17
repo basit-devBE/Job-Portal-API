@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "echo \"No tests yet\""   
+    "test": "echo \"No tests yet\"" ,
+    "build": "npm install && npm run"  
    },
   "keywords": [],
   "author": "",
